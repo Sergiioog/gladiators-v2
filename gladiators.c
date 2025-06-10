@@ -31,17 +31,17 @@ Al finalizar la batalla, el programa deberá mostrar el resultado y mostrar los 
 #include <string.h>
 
 typedef enum {
-	ARMA_ESPADA, ARMA_LANZA	//Revisar daño
+	ARMA_ESPADA, ARMA_LANZA, ARMA_PROHIBIDA	//Revisar daño
 } Arma_e;
 
 typedef struct {
 	char nombre [10];
-	char arma [10]; //Revisar con enum
+	Arma_e arma;
 	int fuerza;
 	int salud;
 } Gladiador_t;
 
-
+Arma_e convierteStringArma(char *armaGladiador);
 
 int main(int argc, char *argv []){
 	
@@ -50,6 +50,13 @@ int main(int argc, char *argv []){
 	
 	char bufferGladiadorUsuario [100];
 	char bufferGladiadorMaquina [100];
+	char *armaU;
+	char *armaM;
+	
+	if(argc != 3){
+		printf("Error, numero de parametros incorrectos (Gld1,danio,arma Gld2,danio,arma)\n");
+		return 0;
+	}
 	
 	strncpy(bufferGladiadorUsuario, argv[1], sizeof(bufferGladiadorUsuario));
 	strncpy(bufferGladiadorMaquina, argv[2], sizeof(bufferGladiadorMaquina));
@@ -57,16 +64,44 @@ int main(int argc, char *argv []){
 	char *pGladiadorUsuario = strtok(bufferGladiadorUsuario, ",");
 	while(pGladiadorUsuario != NULL){
 		printf("Token: %s\n", pGladiadorUsuario);
+		armaU = pGladiadorUsuario;
 		pGladiadorUsuario = strtok(NULL, ",");
 	}
 	
-	strcpy(gladiadorUsuario.nombre,"Sergio");
-	strcpy(gladiadorUsuario.arma, "Espada");
-	gladiadorUsuario.fuerza = 100;
-	gladiadorUsuario.salud = 100;
+	char *pGladiadorMaquina = strtok(bufferGladiadorMaquina, ",");
+	while(pGladiadorMaquina != NULL){
+		printf("Token maquina: %s\n", pGladiadorMaquina);
+		armaM = pGladiadorMaquina;
+		pGladiadorMaquina = strtok(NULL, ",");
+	}
 	
-	//printf("Los datos del gladiador son: nombre -> %s, arma -> %s, fuerza -> %d, salud -> %d", prueba, gladiadorUsuario.arma, gladiadorUsuario.fuerza, gladiadorUsuario.salud);
+	Arma_e armaFinalUsuario = convierteStringArma(armaU);
+	Arma_e armaFinalMaquina = convierteStringArma(armaM);
 	
+	if(armaFinalUsuario == ARMA_ESPADA && armaFinalMaquina == ARMA_ESPADA){
+		printf("Ambos seleccionaron la espada \n");
+	}else if(armaFinalUsuario == ARMA_LANZA && armaFinalMaquina == ARMA_LANZA){
+		printf("Ambos seleccionaron la lanza\n");
+	}else if(armaFinalUsuario == ARMA_ESPADA && armaFinalMaquina == ARMA_LANZA){
+		printf("El usuario escogio la espada, mientras que el otro la lanza\n");
+	}else if(armaFinalUsuario == ARMA_LANZA && armaFinalMaquina == ARMA_ESPADA){
+		printf("El usuario escogio la lanza, mientras que el otro la espada\n");
+	}else{
+		printf("Arma final seleccionada desconocida, introduza espada o lanza\n");
+		return 0;
+	}
+	
+	//Seguir con la fuerza de las armas y los valores de los datos de los gladiadores
 	
 	return 0;
+}
+
+Arma_e convierteStringArma(char *armaGladiador){
+	
+	printf("El arma pasada es: %s\n", armaGladiador);
+	
+	if(strcmp(armaGladiador, "espada") == 0) return ARMA_ESPADA;
+	if(strcmp(armaGladiador, "lanza") == 0) return ARMA_LANZA;
+	
+	return ARMA_PROHIBIDA;
 }
