@@ -29,6 +29,7 @@ Al finalizar la batalla, el programa deberá mostrar el resultado y mostrar los 
 
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 typedef enum {
 	ARMA_ESPADA, ARMA_LANZA, ARMA_PROHIBIDA	//Revisar daño
@@ -59,39 +60,96 @@ int main(int argc, char *argv []){
 	}
 	
 	strncpy(bufferGladiadorUsuario, argv[1], sizeof(bufferGladiadorUsuario));
+	bufferGladiadorUsuario[sizeof(bufferGladiadorUsuario) - 1] = '\0';
 	strncpy(bufferGladiadorMaquina, argv[2], sizeof(bufferGladiadorMaquina));
+	bufferGladiadorMaquina[sizeof(bufferGladiadorMaquina) - 1] = '\0';
+
 	
 	char *pGladiadorUsuario = strtok(bufferGladiadorUsuario, ",");
-	while(pGladiadorUsuario != NULL){
-		printf("Token: %s\n", pGladiadorUsuario);
+	int i = 0;
+	/*while(pGladiadorUsuario != NULL){
 		armaU = pGladiadorUsuario;
 		pGladiadorUsuario = strtok(NULL, ",");
-	}
+	}*/
 	
 	char *pGladiadorMaquina = strtok(bufferGladiadorMaquina, ",");
+	int j = 0;
+	
+	while(pGladiadorUsuario != NULL){
+		switch(i) {
+			case 0: 
+				strncpy(gladiadorUsuario.nombre, pGladiadorUsuario, sizeof(gladiadorUsuario.nombre));
+				break;
+				
+			case 1: 
+				gladiadorUsuario.fuerza = atoi(pGladiadorUsuario);
+				break;
+			
+			case 2: 
+				gladiadorUsuario.arma = convierteStringArma(pGladiadorUsuario);
+				break;
+			
+			default:
+				printf("Error, numero de parametros incorrectos (Gld1,danio,arma Gld2,danio,arma)\n");
+				return 0;		
+		}
+		i++;
+		pGladiadorUsuario = strtok(NULL, ",");
+	}
+	gladiadorUsuario.salud = 100;
+	
 	while(pGladiadorMaquina != NULL){
-		printf("Token maquina: %s\n", pGladiadorMaquina);
-		armaM = pGladiadorMaquina;
+		switch(j) {
+			case 0: 
+				strncpy(gladiadorMaquina.nombre, pGladiadorMaquina, sizeof(gladiadorMaquina.nombre));
+				break;
+				
+			case 1: 
+				gladiadorMaquina.fuerza = atoi(pGladiadorMaquina);
+				break;
+			
+			case 2: 
+				gladiadorMaquina.arma = convierteStringArma(pGladiadorMaquina);
+				break;
+			
+			default:
+				printf("Error, numero de parametros incorrectos (Gld1,danio,arma Gld2,danio,arma)\n");
+				return 0;		
+		}
+		j++;
 		pGladiadorMaquina = strtok(NULL, ",");
 	}
+	gladiadorMaquina.salud = 100;
 	
-	Arma_e armaFinalUsuario = convierteStringArma(armaU);
-	Arma_e armaFinalMaquina = convierteStringArma(armaM);
 	
-	if(armaFinalUsuario == ARMA_ESPADA && armaFinalMaquina == ARMA_ESPADA){
-		printf("Ambos seleccionaron la espada \n");
-	}else if(armaFinalUsuario == ARMA_LANZA && armaFinalMaquina == ARMA_LANZA){
-		printf("Ambos seleccionaron la lanza\n");
-	}else if(armaFinalUsuario == ARMA_ESPADA && armaFinalMaquina == ARMA_LANZA){
-		printf("El usuario escogio la espada, mientras que el otro la lanza\n");
-	}else if(armaFinalUsuario == ARMA_LANZA && armaFinalMaquina == ARMA_ESPADA){
-		printf("El usuario escogio la lanza, mientras que el otro la espada\n");
-	}else{
-		printf("Arma final seleccionada desconocida, introduza espada o lanza\n");
-		return 0;
+	
+	
+	if(gladiadorUsuario.arma == ARMA_LANZA && gladiadorMaquina.arma == ARMA_LANZA){
+		gladiadorUsuario.fuerza *= 2;
+		gladiadorMaquina.fuerza *= 2;
+		
+	}else if (gladiadorUsuario.arma == ARMA_LANZA){
+		gladiadorUsuario.fuerza *= 2;
+		
+	}else if (gladiadorMaquina.arma == ARMA_LANZA){
+		gladiadorMaquina.fuerza *= 2;
 	}
 	
-	//Seguir con la fuerza de las armas y los valores de los datos de los gladiadores
+	printf("Los datos del GLADIADOR USUARIO SON:\n");
+	printf("Nombre -> %s\n", gladiadorUsuario.nombre);
+	printf("Arma -> %d\n", gladiadorUsuario.arma);
+	printf("Fuerza -> %d\n", gladiadorUsuario.fuerza);
+	printf("Salud -> %d\n", gladiadorUsuario.salud);
+	printf("----------------------------------------\n");
+	printf("Los datos del GLADIADOR MAQUINA SON:\n");
+	printf("Nombre -> %s\n", gladiadorMaquina.nombre);
+	printf("Arma -> %d\n", gladiadorMaquina.arma);
+	printf("Fuerza -> %d\n", gladiadorMaquina.fuerza);
+	printf("Salud -> %d\n", gladiadorMaquina.salud);
+
+
+	
+	//Seguir  con la fuerza de las armas y los valores de los datos de los gladiadores
 	
 	return 0;
 }
